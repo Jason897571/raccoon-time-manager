@@ -1,3 +1,35 @@
+/* 
+GIVEN I am using a daily planner to create a schedule
+WHEN I open the planner
+THEN the current day is displayed at the top of the calendar
+WHEN I scroll down
+THEN I am presented with time blocks for standard business hours of 9am to 5pm
+WHEN I view the time blocks for that day
+THEN each time block is color-coded to indicate whether it is in the past, present, or future
+WHEN I click into a time block
+THEN I can enter an event
+WHEN I click the save button for that time block
+THEN the text for that event is saved in local storage
+WHEN I refresh the page
+THEN the saved events persist
+ */
+
+/* 
+1. need to show current day in the top
+2. create blocks for 9am to 5pm
+3. color the blocks regarding past,peresent,future 
+4. when clicking a block, an event can be edited
+5. when clicking a save button, save data to the local storage
+6. the data should persist
+*/
+
+let current_day_element = $('#currentDay');
+setInterval(function(){
+  let current_time = dayjs().format('dddd, MMMM Do YYYY');
+  current_day_element.text(current_time);
+}, 1000);
+
+
 // Wrap all code that interacts with the DOM in a call to jQuery to ensure that
 // the code isn't run until the browser has finished rendering all the elements
 // in the html.
