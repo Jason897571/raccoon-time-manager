@@ -24,11 +24,56 @@ THEN the saved events persist
 */
 
 let current_day_element = $('#currentDay');
+let block_container = $('.block-container');
+
+// set up the time display 
 setInterval(function(){
   let current_time = dayjs().format('dddd, MMMM D YYYY  HH:mm:ss');
   current_day_element.text(current_time);
 }, 1000);
 
+// create time block for schedule from 9am to 5pm
+create_blocks = function(hour){
+  let time_block = $("<div>")
+  time_block.attr("id",`hour-12`)
+  time_block.addClass('row time-block'); // may add past present future
+  block_container.append(time_block);
+
+
+  let hour_element = $("<div>");
+  hour_element.addClass('col-2 col-md-1 hour text-center py-3');
+  hour_element.text(hour + "PM");
+  time_block.append(hour_element);
+
+
+  let text_element = $("<textarea>");
+  text_element.addClass('col-8 col-md-10 textarea');
+  text_element.attr('rows',"3")
+  time_block.append(text_element);
+
+  let save_button = $("<button>");
+  save_button.addClass('btn saveBtn col-2 col-md-1');
+  save_button.attr("aria-label","save")
+  time_block.append(save_button);
+
+  let icon_element = $("<i>");
+  icon_element.addClass("fas fa-save");
+  icon_element.attr("aria-hidden","true")
+  save_button.append(icon_element);
+
+
+}
+
+for(let i = 12; i < 18; i++){
+  if(i >12){
+    let time = i-12
+    create_blocks(time);
+
+  }else{
+    create_blocks(i);
+  }
+  
+}
 
 // Wrap all code that interacts with the DOM in a call to jQuery to ensure that
 // the code isn't run until the browser has finished rendering all the elements
