@@ -25,7 +25,7 @@ THEN the saved events persist
 
 let current_day_element = $('#currentDay');
 setInterval(function(){
-  let current_time = dayjs().format('dddd, MMMM Do YYYY');
+  let current_time = dayjs().format('dddd, MMMM D YYYY  HH:mm:ss');
   current_day_element.text(current_time);
 }, 1000);
 
