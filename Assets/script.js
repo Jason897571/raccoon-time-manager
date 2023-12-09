@@ -24,11 +24,63 @@ THEN the saved events persist
 */
 
 let current_day_element = $('#currentDay');
+let block_container = $('.block-container');
+
+// set up the time display 
 setInterval(function(){
-  let current_time = dayjs().format('dddd, MMMM Do YYYY');
+  let current_time = dayjs().format('dddd, MMMM D YYYY  HH:mm:ss');
   current_day_element.text(current_time);
 }, 1000);
 
+// create time block for schedule from 9am to 5pm
+create_blocks = function(hour){
+  // To determine how the time display in first column
+  if(hour < 12){
+    var time_present = hour + "AM"
+  }
+  else if(hour == 12){
+    var time_present = hour + "PM"
+  }
+  else{
+    var time_present = (hour -12) + "PM"
+  }
+  
+
+
+  let time_block = $("<div>")
+  time_block.attr("id",`hour-${hour}`)
+  time_block.addClass('row time-block'); // may add past present future
+  block_container.append(time_block);
+
+
+  let hour_element = $("<div>");
+  hour_element.addClass('col-2 col-md-1 hour text-center py-3');
+  hour_element.text(time_present);
+  time_block.append(hour_element);
+
+
+  let text_element = $("<textarea>");
+  text_element.addClass('col-8 col-md-10 textarea');
+  text_element.attr('rows',"3")
+  time_block.append(text_element);
+
+  let save_button = $("<button>");
+  save_button.addClass('btn saveBtn col-2 col-md-1');
+  save_button.attr("aria-label","save")
+  time_block.append(save_button);
+
+  let icon_element = $("<i>");
+  icon_element.addClass("fas fa-save");
+  icon_element.attr("aria-hidden","true")
+  save_button.append(icon_element);
+
+
+}
+
+// loop to create time blocks
+for(let i = 12; i < 18; i++){
+  create_blocks(i);
+}
 
 // Wrap all code that interacts with the DOM in a call to jQuery to ensure that
 // the code isn't run until the browser has finished rendering all the elements
@@ -46,7 +98,26 @@ $(function () {
   // attribute of each time-block be used to conditionally add or remove the
   // past, present, and future classes? How can Day.js be used to get the
   // current hour in 24-hour time?
-  //
+  let time_blocks = $(".time-block");
+  
+
+  $.each(time_blocks, function(index, time_block){
+
+    $(time_block).removeClass("past present future")
+    let block_id = parseInt(time_block.id.replace("hour-", ""));
+    if(block_id < dayjs().hour()){
+      $(time_block).addClass("past")
+    } 
+    else if(block_id == dayjs().hour()){
+      $(time_block).addClass("present")
+    }
+    else{
+      $(time_block).addClass("future")
+    }
+    console.log(block_id)
+
+  })
+
   // TODO: Add code to get any user input that was saved in localStorage and set
   // the values of the corresponding textarea elements. HINT: How can the id
   // attribute of each time-block be used to do this?
