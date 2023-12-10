@@ -23,14 +23,7 @@ THEN the saved events persist
 6. the data should persist
 */
 
-let current_day_element = $('#currentDay');
 let block_container = $('.block-container');
-
-// set up the time display 
-setInterval(function(){
-  let current_time = dayjs().format('dddd, MMMM D YYYY  HH:mm:ss');
-  current_day_element.text(current_time);
-}, 1000);
 
 // create time block for schedule from 9am to 5pm
 create_blocks = function(hour){
@@ -78,13 +71,11 @@ create_blocks = function(hour){
 }
 
 // loop to create time blocks
-for(let i = 12; i < 18; i++){
+for(let i = 9; i < 18; i++){
   create_blocks(i);
 }
 
-// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
-// the code isn't run until the browser has finished rendering all the elements
-// in the html.
+
 $(function () {
   // TODO: Add a listener for click events on the save button. This code should
   // use the id in the containing time-block as a key to save the user input in
@@ -92,8 +83,44 @@ $(function () {
   // function? How can DOM traversal be used to get the "hour-x" id of the
   // time-block containing the button that was clicked? How might the id be
   // useful when saving the description in local storage?
-  //
-  // TODO: Add code to apply the past, present, or future class to each time
+  let block_container = $('.block-container');
+  block_container.on('click', function(event){
+    let target_element = event.target;
+
+    if(target_element.classList.contains('saveBtn')){
+      // get data from input text and hour id
+      let input_text = $(target_element).prev().val();
+      let parent_hour_id = $(target_element).parent().attr('id');
+
+      //get local data
+      let save_data = [];
+
+      if(JSON.parse(localStorage.getItem("data"))){
+        save_data = JSON.parse(localStorage.getItem("data"));
+      }
+
+      let new_data = {
+        "hour_id": parent_hour_id,
+        "description": input_text};
+      // find the index of the new data in local data
+      let data_index = save_data.findIndex(local_item => local_item.hour_id === new_data.hour_id)
+
+      // if new data is not in local data
+      if(data_index === -1){
+        save_data.push(new_data);
+      }
+      else{
+        save_data[data_index] = new_data;
+      }
+
+      localStorage.setItem("data", JSON.stringify(save_data));
+    }
+  });
+
+
+
+
+  // Add code to apply the past, present, or future class to each time
   // block by comparing the id to the current hour. HINTS: How can the id
   // attribute of each time-block be used to conditionally add or remove the
   // past, present, and future classes? How can Day.js be used to get the
@@ -121,6 +148,23 @@ $(function () {
   // TODO: Add code to get any user input that was saved in localStorage and set
   // the values of the corresponding textarea elements. HINT: How can the id
   // attribute of each time-block be used to do this?
-  //
-  // TODO: Add code to display the current date in the header of the page.
+  let local_data = JSON.parse(localStorage.getItem("data"));
+
+  if(local_data){
+    $.each(local_data, function(index, data){
+       let time_block = $("#" + data["hour_id"]);
+       let text_area = time_block.find("textarea")
+       text_area.text(data["description"])
+  })}
+
+
+
+  // Add code to display the current date in the header of the page.
+
+  let current_day_element = $('#currentDay');
+  // set up the time display 
+  setInterval(function(){
+    let current_time = dayjs().format('dddd, MMMM D YYYY  HH:mm:ss');
+    current_day_element.text(current_time);
+  }, 1000);
 });
