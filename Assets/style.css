@@ -88,6 +88,16 @@ textarea {
   
 }
 
+.pop-up-title{
+  color:green;
+  font-family: 'Helvetica', sans-serif;
+  text-align: center;
+}
+#pop-up{
+  text-align: center;
+  text-wrap:balance;
+}
+
 footer{
 
   left: 0;

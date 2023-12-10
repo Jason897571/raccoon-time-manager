@@ -16,7 +16,7 @@ create_blocks = function(hour){
 
   let time_block = $("<div>")
   time_block.attr("id",`hour-${hour}`)
-  time_block.addClass('row time-block'); // may add past present future
+  time_block.addClass('row time-block'); 
   block_container.append(time_block);
 
 
@@ -32,7 +32,11 @@ create_blocks = function(hour){
   time_block.append(text_element);
 
   let save_button = $("<button>");
-  save_button.addClass('btn saveBtn col-2 col-md-1');
+  save_button.attr("type","button")
+  save_button.addClass('btn saveBtn col-2 col-md-1 btn-primary');
+  save_button.attr("data-bs-toggle","modal")
+  save_button.attr("data-bs-target","#exampleModal")
+  
   save_button.attr("aria-label","save")
   time_block.append(save_button);
 
@@ -62,6 +66,8 @@ $(function () {
       // get data from input text and hour id
       let input_text = $(target_element).prev().val();
       let parent_hour_id = $(target_element).parent().attr('id');
+      let hour_element_text = $(target_element).prev().prev().text();
+      let pop_up_element = $("#pop-up")
 
       //get local data
       let save_data = [];
@@ -79,12 +85,29 @@ $(function () {
       // if new data is not in local data
       if(data_index === -1){
         save_data.push(new_data);
+        
       }
       else{
         save_data[data_index] = new_data;
+        
       }
+    
+      // update pop-up to confirm updates
+      if(new_data.description.trim() === ""){
+        pop_up_element.text(`You input nothing or your schedule has been removed from ${hour_element_text} today`)
 
+      }
+      else{
+        pop_up_element.text(`${input_text} has been added to ${hour_element_text} today`)
+      }
+      
+
+      // save to localstorage
       localStorage.setItem("data", JSON.stringify(save_data));
+      
+      
+      
+
     }
   });
 
