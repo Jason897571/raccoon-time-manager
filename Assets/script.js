@@ -1,5 +1,9 @@
 let block_container = $('.block-container');
 
+
+
+
+
 // create time block for schedule from 9am to 5pm
 create_blocks = function(hour){
   // To determine how the time display in first column
@@ -16,7 +20,7 @@ create_blocks = function(hour){
 
   let time_block = $("<div>")
   time_block.attr("id",`hour-${hour}`)
-  time_block.addClass('row time-block'); 
+  time_block.addClass(`row time-block`); 
   block_container.append(time_block);
 
 
@@ -112,11 +116,43 @@ $(function () {
   });
 
 
+  let time_blocks = $(".time-block");
+
+   // add a date picker
+   let today = new Date()
+   $( "#datepicker" ).datepicker();
+   // Show selected date
+   
+   let current_date = $("#selected-date")
+   let date_picker = $("#datepicker")
+   date_picker.datepicker("setDate", today)
+   
+   // set up today's date attribute
+   $.each(time_blocks, function(index, time_block){
+ 
+     $(time_block).attr("date",date_picker.val())
+     
+   })
+ 
+   current_date.text("Selected Date: " + date_picker.val())
+ 
+   // change the date attribute when the value of datepicker is changed
+   date_picker.on("change", function(){
+     current_date.text("Selected Date: " + date_picker.val())
+ 
+     $.each(time_blocks, function(index, time_block){
+ 
+       $(time_block).attr("date",date_picker.val())
+       
+     })
+ 
+   })
+ 
+
+   // TODO
   // Add code to apply the past, present, or future class to each time
   // block by comparing the id to the current hour. 
 
-  let time_blocks = $(".time-block");
-  
 
   $.each(time_blocks, function(index, time_block){
 
@@ -131,10 +167,11 @@ $(function () {
     else{
       $(time_block).addClass("future")
     }
-    console.log(block_id)
 
   })
 
+
+ 
   // Add code to get any user input that was saved in localStorage and set
   // the values of the corresponding textarea elements. 
 
@@ -159,16 +196,9 @@ $(function () {
   }, 1000);
 
 
-  // add a date picker
-  $( "#datepicker" ).datepicker();
-  // Show selected date
-  let current_date = $("#selected-date")
-  let date_picker = $("#datepicker")
 
-  current_date.text("Selected Date: " + dayjs().format("MM/DD/YYYY"))
-  date_picker.on("change", function(){
-    current_date.text("Selected Date: " + date_picker.val())
-  })
+
+
   
   
 });
