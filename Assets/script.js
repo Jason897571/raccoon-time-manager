@@ -157,4 +157,18 @@ $(function () {
     let current_time = dayjs().format('dddd, MMMM D, YYYY -- HH:mm:ss');
     current_day_element.text(current_time);
   }, 1000);
+
+
+  // add a date picker
+  $( "#datepicker" ).datepicker();
+  // Show selected date
+  let current_date = $("#selected-date")
+  let date_picker = $("#datepicker")
+
+  current_date.text("Selected Date: " + dayjs().format("MM/DD/YYYY"))
+  date_picker.on("change", function(){
+    current_date.text("Selected Date: " + date_picker.val())
+  })
+  
+  
 });
