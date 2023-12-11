@@ -8,7 +8,7 @@ create_blocks = function (hour) {
   } else if (hour == 12) {
     var time_present = hour + "PM";
   } else {
-    var time_present = hour - 12 + "PM";
+    var time_present = (hour - 12) + "PM";
   }
 
   let time_block = $("<div>");
@@ -19,6 +19,7 @@ create_blocks = function (hour) {
   let hour_element = $("<div>");
   hour_element.addClass("col-2 col-md-1 hour text-center py-3");
   hour_element.text(time_present);
+  hour_element.attr("hour",time_present)
   time_block.append(hour_element);
 
   let text_element = $("<textarea>");
@@ -111,6 +112,18 @@ $(function () {
   let date_picker = $("#datepicker");
   date_picker.datepicker("setDate", today);
 
+  var set_up_today_time_blocks = function(time_block){
+    let block_id = parseInt(time_block.id.replace("hour-", ""));
+    if (block_id < dayjs().hour()) {
+      $(time_block).addClass("past");
+    } else if (block_id == dayjs().hour()) {
+      $(time_block).addClass("present");
+    } else {
+      $(time_block).addClass("future");
+    }
+
+  }
+
   // set up today's date attribute
   $.each(time_blocks, function (index, time_block) {
     $(time_block).attr("date", date_picker.val());
@@ -133,45 +146,35 @@ $(function () {
       // compare date today with the date picked
       let time_block_date = $(time_block).attr("date");
       let today_date = dayjs().format("MM/DD/YYYY");
+      
 
       if (time_block_date < today_date) {
         $(time_block).addClass("past");
+        let hour_block = $(time_block).find(".hour").first()
+
+        hour_block.text(`${time_block_date}\n${hour_block.attr("hour")}`)
+        
       } else if (time_block_date == today_date) {
-        let block_id = parseInt(time_block.id.replace("hour-", ""));
-        if (block_id < dayjs().hour()) {
-          $(time_block).addClass("past");
-        } else if (block_id == dayjs().hour()) {
-          $(time_block).addClass("present");
-        } else {
-          $(time_block).addClass("future");
-        }
+        set_up_today_time_blocks(time_block);
       } else {
         $(time_block).addClass("future");
+        let hour_block = $(time_block).find(".hour").first()
+
+        hour_block.text(`${time_block_date}\n${hour_block.attr("hour")}`)
       }
     });
   });
 
-  // TODO
+
   // Add code to apply the past, present, or future class to each time
   // block by comparing the id to the current hour.
 
   // defaut setup for today
   $.each(time_blocks, function(index, time_block){
-
     $(time_block).removeClass("past");
     $(time_block).removeClass("present");
     $(time_block).removeClass("future");
-    
-    let block_id = parseInt(time_block.id.replace("hour-", ""));
-    if(block_id < dayjs().hour()){
-      $(time_block).addClass("past")
-    } 
-    else if(block_id == dayjs().hour()){
-      $(time_block).addClass("present")
-    }
-    else{
-      $(time_block).addClass("future")
-    }
+    set_up_today_time_blocks(time_block);
 
   })
 
