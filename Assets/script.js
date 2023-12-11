@@ -183,17 +183,19 @@ $(function () {
 
 
 
-
-
-
-
-
   // change the date attribute when the value of datepicker is changed
   date_picker.on("change", function () {
     current_date.text("Selected Date: " + date_picker.val());
     $("#pop-up").text("");
     // when the date changes, the presentation of time block will change 
     $.each(time_blocks, function (index, time_block) {
+
+      //clear any content in text area for future import
+      let text_area = $(time_block).find("textarea");
+      //TODO pretty tricky here
+      text_area.text("")
+      text_area.val("")
+      
       // assign date attribute to time block
       $(time_block).attr("date", date_picker.val());
       // remove time class from time block
@@ -221,17 +223,14 @@ $(function () {
         hour_block.text(`${time_block_date}\n${hour_block.attr("hour")}`)
       }
 
-      // TODO
-
+      
       let local_data = JSON.parse(localStorage.getItem("data"));
 
       if (local_data) {
-        let matchingData = local_data.find(data =>
-          data.hour_id === time_block.id && data.date === time_block.date
-        );
-  
+        let matchingData = local_data.find(data =>data.hour_id === $(time_block).attr("id") && data.date === $(time_block).attr("date"));
+        
         if (matchingData) {
-          let text_area = $(time_block).find("textarea");
+          
           text_area.val(matchingData.description);
         }
         
