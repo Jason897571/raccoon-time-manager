@@ -60,6 +60,11 @@ textarea {
   color: white;
 }
 
+.past .hour{
+  text-align: center;
+  
+}
+
 .present {
   background-color: #ff6961;
   color: white;
