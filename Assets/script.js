@@ -52,14 +52,92 @@ $(function () {
   // use the id in the containing time-block as a key to save the user input in
   // local storage.
   let block_container = $(".block-container");
+  let time_blocks = $(".time-block");
+
+  // add a date picker
+  let today = new Date();
+  $("#datepicker").datepicker();
+
+  // Show selected date
+  let current_date = $("#selected-date");
+  let date_picker = $("#datepicker");
+  date_picker.datepicker("setDate", today);
+
+  var set_up_today_time_blocks = function(time_block){
+    let block_id = parseInt(time_block.id.replace("hour-", ""));
+    // change the color for each time block
+    if (block_id < dayjs().hour()) {
+      $(time_block).addClass("past");
+    } else if (block_id == dayjs().hour()) {
+      $(time_block).addClass("present");
+    } else {
+      $(time_block).addClass("future");
+    }
+
+    // update hour block
+    let hour_block = $(time_block).children(".hour").first();
+    hour_block.text(hour_block.attr("hour"))
+
+  }
+
+  // set up today's date attribute
+  $.each(time_blocks, function (index, time_block) {
+    $(time_block).attr("date", date_picker.val());
+  });
+
+  current_date.text("Selected Date: " + date_picker.val());
+
+  // Add code to apply the past, present, or future class to each time
+  // block by comparing the id to the current hour.
+
+  // defaut setup for today
+  $.each(time_blocks, function(index, time_block){
+    $(time_block).removeClass("past");
+    $(time_block).removeClass("present");
+    $(time_block).removeClass("future");
+    set_up_today_time_blocks(time_block);
+
+  })
+  //TODO
+  // Add code to get any user input that was saved in localStorage and set
+  // the values of the corresponding textarea elements.
+
+  let local_data = JSON.parse(localStorage.getItem("data"));
+
+  if (local_data) {
+    $.each(local_data, function (index, data) {
+      let time_block = $("#" + data["hour_id"]);
+
+      if(data["date"] == time_block.attr("date")){
+        let text_area = time_block.find("textarea");
+        text_area.text(data["description"]);
+
+      }
+
+
+    });
+  }
+
+  // Add code to display the current date in the header of the page.
+
+  let current_day_element = $("#currentDay");
+  // set up the time display
+  setInterval(function () {
+    let current_time = dayjs().format("dddd, MMMM D, YYYY -- HH:mm:ss");
+    current_day_element.text(current_time);
+  }, 1000);
+
+
+
   block_container.on("click", function (event) {
     let target_element = event.target;
 
     if (target_element.classList.contains("saveBtn")) {
       // get data from input text and hour id
-      let input_text = $(target_element).prev().val();
-      let parent_hour_id = $(target_element).parent().attr("id");
-      let hour_element_text = $(target_element).prev().prev().text();
+      let input_text = $(target_element).prev().val(); // input text area
+      let parent_hour_id = $(target_element).parent().attr("id"); // time block id
+      let hour_element_text = $(target_element).prev().prev().attr("hour"); // displayed hour in first column
+      let date_text = $(target_element).parent().attr("date") //selected date
       let pop_up_element = $("#pop-up");
 
       //get local data
@@ -72,10 +150,11 @@ $(function () {
       let new_data = {
         hour_id: parent_hour_id,
         description: input_text,
+        date:date_text,
       };
       // find the index of the new data in local data
       let data_index = save_data.findIndex(
-        (local_item) => local_item.hour_id === new_data.hour_id
+        (local_item) => local_item.hour_id === new_data.hour_id && local_item.date === new_data.date
       );
 
       // if new data is not in local data
@@ -88,11 +167,11 @@ $(function () {
       // update pop-up to confirm updates
       if (new_data.description.trim() === "") {
         pop_up_element.text(
-          `You input nothing or your schedule has been removed from ${hour_element_text} today`
+          `You input nothing or your schedule has been removed from ${hour_element_text} on ${date_text}`
         );
       } else {
         pop_up_element.text(
-          `${input_text} has been added to ${hour_element_text} today`
+          `${input_text} has been added to ${hour_element_text} on ${date_text}`
         );
       }
 
@@ -101,40 +180,11 @@ $(function () {
     }
   });
 
-  let time_blocks = $(".time-block");
-
-  // add a date picker
-  let today = new Date();
-  $("#datepicker").datepicker();
-  // Show selected date
-
-  let current_date = $("#selected-date");
-  let date_picker = $("#datepicker");
-  date_picker.datepicker("setDate", today);
-
-  var set_up_today_time_blocks = function(time_block){
-    let block_id = parseInt(time_block.id.replace("hour-", ""));
-    if (block_id < dayjs().hour()) {
-      $(time_block).addClass("past");
-    } else if (block_id == dayjs().hour()) {
-      $(time_block).addClass("present");
-    } else {
-      $(time_block).addClass("future");
-    }
-
-  }
-
-  // set up today's date attribute
-  $.each(time_blocks, function (index, time_block) {
-    $(time_block).attr("date", date_picker.val());
-  });
-
-  current_date.text("Selected Date: " + date_picker.val());
-
   // change the date attribute when the value of datepicker is changed
   date_picker.on("change", function () {
     current_date.text("Selected Date: " + date_picker.val());
-
+    $("#pop-up").text("");
+    // when the date changes, the presentation of time block will change 
     $.each(time_blocks, function (index, time_block) {
       // assign date attribute to time block
       $(time_block).attr("date", date_picker.val());
@@ -162,41 +212,29 @@ $(function () {
 
         hour_block.text(`${time_block_date}\n${hour_block.attr("hour")}`)
       }
+
+      // TODO
+
+      let local_data = JSON.parse(localStorage.getItem("data"));
+
+      if (local_data) {
+        $.each(local_data, function (index, data) {
+          let time_block = $("#" + data["hour_id"]);
+          let text_area = time_block.find("textarea");
+          text_area.text("")
+    
+          if(data["date"] == time_block.attr("date")){
+            
+            text_area.text(data["description"]);
+    
+          }
+    
+    
+        });
+      }
     });
   });
 
 
-  // Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour.
-
-  // defaut setup for today
-  $.each(time_blocks, function(index, time_block){
-    $(time_block).removeClass("past");
-    $(time_block).removeClass("present");
-    $(time_block).removeClass("future");
-    set_up_today_time_blocks(time_block);
-
-  })
-
-  // Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements.
-
-  let local_data = JSON.parse(localStorage.getItem("data"));
-
-  if (local_data) {
-    $.each(local_data, function (index, data) {
-      let time_block = $("#" + data["hour_id"]);
-      let text_area = time_block.find("textarea");
-      text_area.text(data["description"]);
-    });
-  }
-
-  // Add code to display the current date in the header of the page.
-
-  let current_day_element = $("#currentDay");
-  // set up the time display
-  setInterval(function () {
-    let current_time = dayjs().format("dddd, MMMM D, YYYY -- HH:mm:ss");
-    current_day_element.text(current_time);
-  }, 1000);
+  
 });
