@@ -63,6 +63,13 @@ $(function () {
   let date_picker = $("#datepicker");
   date_picker.datepicker("setDate", today);
 
+  // set up today's date attribute
+  $.each(time_blocks, function (index, time_block) {
+    $(time_block).attr("date", date_picker.val());
+  });
+
+  current_date.text("Selected Date: " + date_picker.val());
+
   var set_up_today_time_blocks = function(time_block){
     let block_id = parseInt(time_block.id.replace("hour-", ""));
     // change the color for each time block
@@ -80,12 +87,6 @@ $(function () {
 
   }
 
-  // set up today's date attribute
-  $.each(time_blocks, function (index, time_block) {
-    $(time_block).attr("date", date_picker.val());
-  });
-
-  current_date.text("Selected Date: " + date_picker.val());
 
   // Add code to apply the past, present, or future class to each time
   // block by comparing the id to the current hour.
@@ -113,7 +114,6 @@ $(function () {
         text_area.text(data["description"]);
 
       }
-
 
     });
   }
@@ -180,6 +180,14 @@ $(function () {
     }
   });
 
+
+
+
+
+
+
+
+
   // change the date attribute when the value of datepicker is changed
   date_picker.on("change", function () {
     current_date.text("Selected Date: " + date_picker.val());
@@ -218,19 +226,15 @@ $(function () {
       let local_data = JSON.parse(localStorage.getItem("data"));
 
       if (local_data) {
-        $.each(local_data, function (index, data) {
-          let time_block = $("#" + data["hour_id"]);
-          let text_area = time_block.find("textarea");
-          text_area.text("")
-    
-          if(data["date"] == time_block.attr("date")){
-            
-            text_area.text(data["description"]);
-    
-          }
-    
-    
-        });
+        let matchingData = local_data.find(data =>
+          data.hour_id === time_block.id && data.date === time_block.date
+        );
+  
+        if (matchingData) {
+          let text_area = $(time_block).find("textarea");
+          text_area.val(matchingData.description);
+        }
+        
       }
     });
   });
