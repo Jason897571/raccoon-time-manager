@@ -98,25 +98,30 @@ You should have your shell ready for downloading this project. We use gitbash as
 <a id="usage"></a>
 ## Usage
 
-when you open the project in your browser, you will see the following page.
+When you open the project in your browser, you will see the following page.
 
 
 
-![Alt text](./assets/images/quiz.png)
+![Alt text](./Assets/image/cover.png)
 
-When the time is up or your complete the quiz, it will bring you to the initial page where you can input your inital and store your scores.
+When you input your plan in the textarea, you can save it by clicking the save button in the right. After clicking it, you will see a window poping up to confirm that you have update your schedule.
+However, if your input is None or you delete your schedule, you will see a popup window to remind you that you have removed your schedule.
 
-<p><strong>Result Page</strong></p>
+<p><strong>Save Data</strong></p>
 
-![Alt text](./assets/images/result_page.png)
+![Alt text](./Assets/image/input.png)
+![Alt text](./Assets/image/popup.png)
+![Alt text](./Assets/image/nothing.png)
 
-After you submit your initial and score, you will see the final rank board. By clicking the "Go Back" button , you can go back to the start page. By clicking the "Clear high scores" button, you can clear all scores and initials.
+By choosing the date from datepicker, you can switch date to the past or future and you can add or remove your schedule in different date as well.
 
 
 
-<p><strong>Rank Page </strong></p> 
+<p><strong>Switching Date </strong></p> 
 
-![Alt text](./assets/images/rank_page.png)
+![Alt text](./Assets/image/past.png)
+![Alt text](./Assets/image/future.png)
+
 For more details, please refer to the [Documentation](https://github.com/Jason897571/raccoon-time-manager)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

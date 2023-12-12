@@ -99,7 +99,7 @@ $(function () {
     set_up_today_time_blocks(time_block);
 
   })
-  //TODO
+
   // Add code to get any user input that was saved in localStorage and set
   // the values of the corresponding textarea elements.
 
@@ -192,8 +192,7 @@ $(function () {
 
       //clear any content in text area for future import
       let text_area = $(time_block).find("textarea");
-      //TODO pretty tricky here
-      text_area.text("")
+      
       text_area.val("")
       
       // assign date attribute to time block
