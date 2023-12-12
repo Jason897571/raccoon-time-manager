@@ -129,10 +129,11 @@ For more details, please refer to the [Documentation](https://github.com/Jason89
 
 <a id="future_additions"></a>
 ## Future Additions
-* Different question types can be added
-* A difficulty Options panel can be added to start page
-* A Panel to show historical correct and incorrect questions can be added
-* The ranking system can be added to have the highest score in the first place in the rank page.
+* Add login in and register system for user to register or log in
+* A timer may added for event track
+* Creating dragable feature for the schedule so that the user can drag the schedule to the right place
+* Creating different sections for different users, such as shopping list.
+* Creating feature to arrange events in difficilty.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
